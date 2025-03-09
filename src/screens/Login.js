@@ -1,53 +1,74 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     StyleSheet, Text, View, TextInput, TouchableOpacity,
     Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ImageWorkTrack from "../../assets/img/logo.png";
+import Toast from 'react-native-toast-message';
+import { WorkContext } from '../context/ContextWork';
+import Loading from '../components/Loading';
+import Welcome from '../components/Welcome';
 
 const Login = () => {
     const { navigate } = useNavigation();
+    const { loginUser } = useContext(WorkContext)
 
+    const [loadingLogin, setLoadingLogin] = useState(false)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.container}
-            >
-                {/* Logo və Başlıq */}
-                <Image source={ImageWorkTrack} style={styles.logo} />
-                <Text style={styles.title}>İşçi İdarəetmə Sistemi</Text>
+        loadingLogin ? <Loading />
+            :
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={styles.container}
+                >
+                    <Image source={ImageWorkTrack} style={styles.logo} />
+                    <Text style={styles.title}>İşçi İdarəetmə Sistemi</Text>
 
-                {/* İstifadəçi adı daxil etmə sahəsi */}
-                <TextInput
-                    style={styles.input}
-                    placeholder="İstifadəçi adı"
-                    type="text"
-                    placeholderTextColor="#888"
-                    autoCapitalize="none"
-                />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="İstifadəçi adı"
+                        type="text"
+                        placeholderTextColor="#888"
+                        autoCapitalize="none"
+                        onChangeText={(text) => setEmail(text)}
+                    />
 
-                {/* Şifrə daxil etmə sahəsi */}
-                <TextInput
-                    style={styles.input}
-                    placeholder="Şifrə"
-                    secureTextEntry
-                    placeholderTextColor="#888"
-                    autoCapitalize="none"
-                />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Şifrə"
+                        secureTextEntry
+                        placeholderTextColor="#888"
+                        autoCapitalize="none"
+                        onChangeText={(text) => setPassword(text)}
+                    />
 
-                {/* Giriş düyməsi */}
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Giriş</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={async () => {
+                            setLoadingLogin(true)
+                            try {
+                                await loginUser(email, password)
+                                navigate("HomePage")
+                                setTimeout(() => setLoadingLogin(false), 500);
+                            } catch (error) {
+                                console.log(error)
+                                setLoadingLogin(false)
+                            }
+                        }}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>Giriş</Text>
+                    </TouchableOpacity>
 
-                {/* Yeni qeydiyyat linki */}
-                <TouchableOpacity onPress={() => navigate('Register')}>
-                    <Text style={styles.registerLink}>Yeni hesab yarat</Text>
-                </TouchableOpacity>
-            </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
+                    <TouchableOpacity onPress={() => navigate('Register')}>
+                        <Text style={styles.registerLink}>Yeni hesab yarat</Text>
+                    </TouchableOpacity>
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
     );
 };
 
@@ -56,7 +77,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f0f4f7',  
+        backgroundColor: '#f0f4f7',
         padding: 20,
     },
     logo: {

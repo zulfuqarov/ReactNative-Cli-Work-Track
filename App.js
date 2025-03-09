@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import ContextWork from './src/context/ContextWork'
 import StackNavigation from './src/navigation/StackNavigation';
 import React, { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message';
 import { View, Text, ActivityIndicator, Alert } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -47,6 +48,7 @@ const App = () => {
       <ContextWork>
         <StackNavigation />
       </ContextWork>
+      <Toast />
     </NavigationContainer>
 
   )

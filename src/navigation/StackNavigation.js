@@ -1,18 +1,37 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Login from '../screens/Login';
 import Register from '../screens/Register';
+import DrawerNavigation from './DrawerNavigation';
+import { WorkContext } from '../context/ContextWork';
+import Welcome from '../components/Welcome';
 
 const MyStack = createStackNavigator()
 
 
 const StackNavigate = () => {
 
+    const { checkAuthLoading } = useContext(WorkContext)
+
     return (
         <MyStack.Navigator
         >
+
+            {checkAuthLoading &&
+                <MyStack.Screen
+                    name="Welcome"
+                    component={Welcome}
+                    options={{
+                        title: "Giriş",
+                        headerTitleAlign: "center",
+                        headerLeft: () => null,
+                        gestureEnabled: false,
+                        headerShown: false
+                    }}
+                />
+            }
 
             <MyStack.Screen
                 name="Login"
@@ -44,7 +63,14 @@ const StackNavigate = () => {
                 }}
             />
 
-            
+            <MyStack.Screen
+                name="HomePage"
+                component={DrawerNavigation}
+                options={{
+                    gestureEnabled: false,
+                    headerShown: false,
+                }}
+            />
 
 
         </MyStack.Navigator>
