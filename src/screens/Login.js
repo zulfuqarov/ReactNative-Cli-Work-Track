@@ -1,24 +1,33 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
     StyleSheet, Text, View, TextInput, TouchableOpacity,
-    Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard
+    Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, BackHandler
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ImageWorkTrack from "../../assets/img/logo.png";
-import Toast from 'react-native-toast-message';
 import { WorkContext } from '../context/ContextWork';
 import Loading from '../components/Loading';
-import Welcome from '../components/Welcome';
 
 const Login = () => {
     const { navigate } = useNavigation();
-    const { loginUser } = useContext(WorkContext)
+    const { loginUser, loadingLogin, setLoadingLogin } = useContext(WorkContext)
 
-    const [loadingLogin, setLoadingLogin] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    
+    useEffect(() => {
+        const backAction = () => {
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, []);
+
     return (
         loadingLogin ? <Loading />
             :
@@ -53,8 +62,6 @@ const Login = () => {
                             setLoadingLogin(true)
                             try {
                                 await loginUser(email, password)
-                                navigate("HomePage")
-                                setTimeout(() => setLoadingLogin(false), 500);
                             } catch (error) {
                                 console.log(error)
                                 setLoadingLogin(false)

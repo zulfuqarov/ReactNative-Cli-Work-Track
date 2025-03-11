@@ -7,6 +7,8 @@ import Register from '../screens/Register';
 import DrawerNavigation from './DrawerNavigation';
 import { WorkContext } from '../context/ContextWork';
 import Welcome from '../components/Welcome';
+import PersonalDetails from '../screens/PersonalDetails';
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
 const MyStack = createStackNavigator()
 
@@ -72,6 +74,22 @@ const StackNavigate = () => {
                 }}
             />
 
+            <MyStack.Screen
+                name="PersonalDetails"
+                component={PersonalDetails}
+                options={{
+                    title: "Işçi Haqqında",
+                    headerBackTitleStyle: {
+                        color: "#FFA500",
+                        marginLeft: 2,
+                        display: "none"
+                    },
+                    headerBackImage: () => (
+                        <Ionicons style={{ marginLeft: 10 }} name="arrow-back" size={24} color="#FFA500" />
+                    ),
+
+                }}
+            />
 
         </MyStack.Navigator>
     )
