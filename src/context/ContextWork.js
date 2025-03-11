@@ -19,6 +19,9 @@ const ContextWork = ({ children }) => {
 
     const { navigate } = useNavigation()
 
+    const [date, setDate] = useState(new Date().toLocaleDateString('en-GB').replace(/\//g, '-'));
+
+
     //register func
     const registerUser = async (email, password, data) => {
         try {
@@ -239,6 +242,74 @@ const ContextWork = ({ children }) => {
         }
     }
 
+    // update worker day
+    const updateWorkerDay = async (workerId, updateDate) => {
+        try {
+            const ordersRef = doc(MyDb, "Owners", user.id, "workers", workerId);
+
+            const workerDoc = await getDoc(ordersRef);
+            if (workerDoc.exists()) {
+                const workerData = workerDoc.data();
+                let workerDays = workerData.workerDay;
+
+                if (!workerDays) {
+                    workerDays = [];
+                }
+
+                const existingDateIndex = workerDays.findIndex(item => item.date === updateDate.date);
+
+                if (existingDateIndex > -1) {
+                    workerDays[existingDateIndex].status = updateDate.status;
+                    workerDays[existingDateIndex].dailyEarnings = updateDate.dailyEarnings;
+                    workerDays[existingDateIndex].workHoursSalary = updateDate.workHoursSalary;
+                    workerDays[existingDateIndex].workHours = updateDate.workHours;
+                } else {
+                    workerDays.push(
+                        {
+                            date: updateDate.date,
+                            status: updateDate.status,
+                            dailyEarnings: updateDate.dailyEarnings,
+                            workHoursSalary: updateDate.workHoursSalary,
+                            workHours: updateDate.workHours
+                        }
+                    );
+                }
+
+                await updateDoc(ordersRef, {
+                    workerDay: workerDays
+                });
+
+                Toast.show({
+                    type: "success",
+                    text1: "Əməliyyat uğurla başa çatdı",
+                    text2: "İşçi günləri uğurla dəyişdirildi.",
+                    position: "top",
+                    visibilityTime: 3000,
+                    autoHide: true
+                });
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1: "Xəta!",
+                    text2: "İşçi tapılmadı, yenidən yoxlayın!",
+                    position: "top",
+                    visibilityTime: 4000,
+                    autoHide: true
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            Toast.show({
+                type: "error",
+                text1: "Xəta!",
+                text2: "İşçi günləri dəyişdirilən zamanı problem yarandı, yenidən yoxlayın!",
+                position: "top",
+                visibilityTime: 4000,
+                autoHide: true
+            });
+        }
+    };
+
     const [checkAuthLoading, setcheckAuthLoading] = useState(true)
     const [loadingLogin, setLoadingLogin] = useState(false)
     useEffect(() => {
@@ -297,8 +368,10 @@ const ContextWork = ({ children }) => {
         }
     }, [user?.id])
 
+
     return (
         <WorkContext.Provider value={{
+            date,
             user,
             workers,
             checkAuthLoading,
@@ -311,6 +384,7 @@ const ContextWork = ({ children }) => {
             deleteWorkerFunc,
             updateWorkerFunc,
             addWorkersFunc,
+            updateWorkerDay,
         }}>
             {
                 children

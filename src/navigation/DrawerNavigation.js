@@ -8,7 +8,7 @@ import BottomNavigation from './BottomNavigation';
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigation = () => {
-   
+
 
     return (
         <Drawer.Navigator>
@@ -24,9 +24,14 @@ const DrawerNavigation = () => {
             />
 
             <Drawer.Screen
-                name="WorkTrack"
-                component={WorkTrack}
-            />
+                options={{
+                    title: 'İşçi Gəlişinin Qeydiyyatı',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+                name="WorkTracking"
+                component={WorkTrack} />
         </Drawer.Navigator  >
     )
 }
