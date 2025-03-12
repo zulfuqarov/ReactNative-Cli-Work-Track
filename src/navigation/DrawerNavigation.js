@@ -3,6 +3,7 @@ import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import WorkTrack from '../screens/WorkTrack';
 import BottomNavigation from './BottomNavigation';
+import WorkHours from '../screens/WorkHours';
 
 
 const Drawer = createDrawerNavigator();
@@ -11,7 +12,15 @@ const DrawerNavigation = () => {
 
 
     return (
-        <Drawer.Navigator>
+        <Drawer.Navigator
+            screenOptions={() => ({
+                headerStyle: {
+                    height: 100,
+                },
+                drawerActiveTintColor: '#FF8C00',
+                drawerInactiveTintColor: '#8E8E8E',
+            })}
+        >
             <Drawer.Screen
                 name="Home"
                 component={BottomNavigation}
@@ -32,6 +41,17 @@ const DrawerNavigation = () => {
                 }}
                 name="WorkTracking"
                 component={WorkTrack} />
+
+            <Drawer.Screen
+                options={{
+                    title: 'Mesai saatların əlavəsi',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+                name="WorkHours"
+                component={WorkHours} />
+
         </Drawer.Navigator  >
     )
 }

@@ -310,6 +310,58 @@ const ContextWork = ({ children }) => {
         }
     };
 
+    // update worker hours 
+    const updateWorkerHours = async (workerId, updateDate) => {
+        try {
+            const ordersRef = doc(MyDb, "Owners", user.id, "workers", workerId);
+
+            const workerDoc = await getDoc(ordersRef);
+            if (workerDoc.exists()) {
+                const workerData = workerDoc.data();
+                let workerDays = workerData.workerDay;
+
+                const existingDateIndex = workerDays.findIndex(item => item.date === updateDate.date && item.status === "Gəldi");
+
+                if (existingDateIndex > -1) {
+                    workerDays[existingDateIndex].workHours = updateDate.workHours;
+                    workerDays[existingDateIndex].workHoursSalary = workerData.workHoursSalary;
+                }
+
+                await updateDoc(ordersRef, {
+                    workerDay: workerDays
+                });
+
+                Toast.show({
+                    type: "success",
+                    text1: "Mesai saatı uğurla qeyd edildi",
+                    text2: "İşçinin mesai saatı uğurla yeniləndi.",
+                    position: "top",
+                    visibilityTime: 3000,
+                    autoHide: true
+                });
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1: "Xəta!",
+                    text2: "İşçi tapılmadı, yenidən yoxlayın!",
+                    position: "top",
+                    visibilityTime: 4000,
+                    autoHide: true
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            Toast.show({
+                type: "error",
+                text1: "Xəta!",
+                text2: "İşçi günləri dəyişdirilən zamanı problem yarandı, yenidən yoxlayın!",
+                position: "top",
+                visibilityTime: 4000,
+                autoHide: true
+            });
+        }
+    };
+
     const [checkAuthLoading, setcheckAuthLoading] = useState(true)
     const [loadingLogin, setLoadingLogin] = useState(false)
     useEffect(() => {
@@ -385,6 +437,7 @@ const ContextWork = ({ children }) => {
             updateWorkerFunc,
             addWorkersFunc,
             updateWorkerDay,
+            updateWorkerHours,
         }}>
             {
                 children
