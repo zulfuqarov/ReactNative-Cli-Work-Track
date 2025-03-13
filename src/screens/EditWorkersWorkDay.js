@@ -8,6 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AddWorkDayModal from '../components/AddWorkDayModal';
 import { WorkContext } from '../context/ContextWork';
+import Loading from '../components/Loading';
 
 const months = [
     { label: "Yanvar", value: "01" },
@@ -26,6 +27,7 @@ const months = [
 
 const EditWorkersWorkDay = () => {
     const { workers, updateWorkerHours, updateWorkerDay } = useContext(WorkContext);
+    const [loading, setLoading] = useState(false);
     const [selectedWorker, setSelectedWorker] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -65,6 +67,10 @@ const EditWorkersWorkDay = () => {
 
     const [workerHours, setworkerHours] = useState('')
 
+
+    if (loading) {
+        return <Loading />
+    }
 
     return (
         <View style={styles.container}>
@@ -199,42 +205,42 @@ const EditWorkersWorkDay = () => {
                                         {expandedStatusCard === item.date && (
                                             <View style={styles.statusButtonsContainer}>
                                                 <TouchableOpacity
-                                                    onPress={() => {
-                                                        // const updatedWorker = {
-                                                        //     ...selectedWorker,
-                                                        //     workerDay: selectedWorker.workerDay.map(day =>
-                                                        //         day.date === item.date ? { ...day, status: "Gəldi" } : day
-                                                        //     )
-                                                        // };
-                                                        updateWorkerDay(selectedWorker.id, {
-                                                            status: "Gəldi",
-                                                            date: item.date,
-                                                            dailyEarnings: selectedWorker.dailySalary,
-                                                            workHoursSalary: selectedWorker.workHoursSalary,
-                                                            workHours: item.workHours
-                                                        })
-                                                        // setSelectedWorker(updatedWorker);
+                                                    onPress={async () => {
+                                                        setLoading(true)
+                                                        try {
+                                                            await updateWorkerDay(selectedWorker.id, {
+                                                                status: "Gəldi",
+                                                                date: item.date,
+                                                                dailyEarnings: selectedWorker.dailySalary,
+                                                                workHoursSalary: selectedWorker.workHoursSalary,
+                                                                workHours: item.workHours
+                                                            })
+                                                        } catch (error) {
+                                                            console.log(error)
+                                                        } finally {
+                                                            setLoading(false)
+                                                        }
                                                     }
                                                     }
                                                     style={styles.statusChangeButtonArrived}>
                                                     <Text style={styles.statusChangeButtonText}>Gəldi</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
-                                                    onPress={() => {
-                                                        // const updatedWorker = {
-                                                        //     ...selectedWorker,
-                                                        //     workerDay: selectedWorker.workerDay.map(day =>
-                                                        //         day.date === item.date ? { ...day, status: "Gəlmədi" } : day
-                                                        //     )
-                                                        // };
-                                                        updateWorkerDay(selectedWorker.id, {
-                                                            status: "Gəlmədi",
-                                                            date: item.date,
-                                                            dailyEarnings: 0,
-                                                            workHoursSalary: 0,
-                                                            workHours: 0
-                                                        })
-                                                        // setSelectedWorker(updatedWorker);
+                                                    onPress={async () => {
+                                                        setLoading(true)
+                                                        try {
+                                                            await updateWorkerDay(selectedWorker.id, {
+                                                                status: "Gəlmədi",
+                                                                date: item.date,
+                                                                dailyEarnings: 0,
+                                                                workHoursSalary: 0,
+                                                                workHours: 0
+                                                            })
+                                                        } catch (error) {
+                                                            console.log(error)
+                                                        } finally {
+                                                            setLoading(false)
+                                                        }
                                                     }}
                                                     style={styles.statusChangeButtonNoArrived}>
                                                     <Text style={styles.statusChangeButtonText}>Gəlmədi</Text>
@@ -254,7 +260,7 @@ const EditWorkersWorkDay = () => {
                                                     keyboardType="number-pad"
                                                 />
                                                 <TouchableOpacity
-                                                    onPress={() => {
+                                                    onPress={async () => {
 
                                                         if (workerHours.trim() === '') {
                                                             alert('Saatı daxil edin');
@@ -264,21 +270,19 @@ const EditWorkersWorkDay = () => {
                                                             alert('İşçi gəlmədiyi üçün mesai saatını dəyişə bilməzsiniz')
                                                             return;
                                                         }
+                                                        setLoading(true)
+                                                        try {
+                                                            await updateWorkerHours(selectedWorker.id, {
+                                                                date: item.date,
+                                                                workHours: parseFloat(workerHours)
+                                                            });
+                                                            setworkerHours('');
 
-                                                        // const updatedWorker = {
-                                                        //     ...selectedWorker,
-                                                        //     workerDay: selectedWorker.workerDay.map(day =>
-                                                        //         day.date === item.date ? { ...day, workHours: parseFloat(workerHours) } : day
-                                                        //     )
-                                                        // };
-
-                                                        updateWorkerHours(selectedWorker.id, {
-                                                            date: item.date,
-                                                            workHours: parseFloat(workerHours)
-                                                        });
-
-                                                        // setSelectedWorker(updatedWorker);
-                                                        setworkerHours('');
+                                                        } catch (error) {
+                                                            console.log(error)
+                                                        } finally {
+                                                            setLoading(false)
+                                                        }
                                                     }}
                                                     style={styles.changeHoursButtonConfirm}>
                                                     <Text style={styles.changeHoursButtonText}>Yadda saxla</Text>
@@ -304,6 +308,7 @@ const EditWorkersWorkDay = () => {
                     isVisible={isAddWorkDayModalVisible}
                     data={selectedWorker}
                     onClose={() => setAddWorkDayModalVisible(false)}
+                    setLoading={setLoading}
                 />
             </Modal>
         </View>

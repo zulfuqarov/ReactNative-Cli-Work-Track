@@ -10,7 +10,7 @@ const workDayStatuses = [
     { label: "Gəlmədi", value: "Gəlmədi" },
 ];
 
-const AddWorkDayModal = ({ isVisible, onClose, data }) => {
+const AddWorkDayModal = ({ isVisible, onClose, data, setLoading }) => {
     const { updateWorkerDay } = useContext(WorkContext)
     const [newWorkDayDate, setNewWorkDayDate] = useState(null);
     const [newWorkDayStatus, setNewWorkDayStatus] = useState("Gəldi");
@@ -22,28 +22,34 @@ const AddWorkDayModal = ({ isVisible, onClose, data }) => {
         setDatePickerVisible(false);
     };
 
-    const addNewWorkDay = () => {
+    const addNewWorkDay = async () => {
         if (!newWorkDayDate) {
             alert('Tarixi  daxil edin');
             return;
         }
-
-        updateWorkerDay(data.id,
-            {
-                date: newWorkDayDate.toLocaleDateString('en-GB').replace(/\//g, '-'),
-                status: newWorkDayStatus,
-                dailyEarnings: data.dailySalary,
-                workHoursSalary: data.workHoursSalary,
-                workHours: parseFloat(newWorkDayHours)
-            }
-        );
-        onClose();
-        setNewWorkDayDate(null);
-        setNewWorkDayStatus("Gəldi");
-        setNewWorkDayHours("");
+        setLoading(true)
+        try {
+            await updateWorkerDay(data.id,
+                {
+                    date: newWorkDayDate.toLocaleDateString('en-GB').replace(/\//g, '-'),
+                    status: newWorkDayStatus,
+                    dailyEarnings: data.dailySalary,
+                    workHoursSalary: data.workHoursSalary,
+                    workHours: parseFloat(newWorkDayHours)
+                }
+            );
+            onClose();
+            setNewWorkDayDate(null);
+            setNewWorkDayStatus("Gəldi");
+            setNewWorkDayHours("");
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
     };
 
-    
+
     return (
         <Modal visible={isVisible} transparent animationType="slide">
             <View style={styles.modalOverlay}>
