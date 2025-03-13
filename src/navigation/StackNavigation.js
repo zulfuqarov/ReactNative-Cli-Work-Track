@@ -8,7 +8,8 @@ import DrawerNavigation from './DrawerNavigation';
 import { WorkContext } from '../context/ContextWork';
 import Welcome from '../components/Welcome';
 import PersonalDetails from '../screens/PersonalDetails';
-import Ionicons from 'react-native-vector-icons/Ionicons'; 
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import WorkMonthDetailsInfo from '../screens/WorkMonthDetailsInfo';
 
 const MyStack = createStackNavigator()
 
@@ -88,6 +89,22 @@ const StackNavigate = () => {
                         <Ionicons style={{ marginLeft: 10 }} name="arrow-back" size={24} color="#FFA500" />
                     ),
 
+                }}
+            />
+
+            <MyStack.Screen
+                name="WorkMonthDetailsInfo"
+                component={WorkMonthDetailsInfo}
+                options={{
+                    title: "Işçi Məlumatları",
+                    headerBackTitleStyle: {
+                        color: "#FFA500",
+                        marginLeft: 2,
+                        display: "none"
+                    },
+                    headerBackImage: () => (
+                        <Ionicons style={{ marginLeft: 10 }} name="arrow-back" size={24} color="#FFA500" />
+                    ),
                 }}
             />
 
