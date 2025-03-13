@@ -4,7 +4,8 @@ import StackNavigation from './src/navigation/StackNavigation';
 import React from 'react';
 import Toast from 'react-native-toast-message';
 import { StatusBar } from 'react-native';
-
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 const App = () => {
 
   // const [isConnected, setIsConnected] = useState(null);

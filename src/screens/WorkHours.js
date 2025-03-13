@@ -104,7 +104,7 @@ const WorkHours = () => {
                                     onChangeText={setEditHours}
                                 />
                                 <TouchableOpacity onPress={handleSaveHours} style={styles.saveButton}>
-                                    <Text style={styles.saveButtonText}>Kaydet</Text>
+                                    <Text style={styles.saveButtonText}>Yadda Saxla</Text>
                                 </TouchableOpacity>
                             </View>
                         )}

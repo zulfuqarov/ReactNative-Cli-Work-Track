@@ -38,7 +38,7 @@ const WorkDealy = () => {
 
     const renderItem = ({ item }) => {
         const work = item.workerDay.find(day => day.date === formattedDate);
-        const earing = work.dailyEarnings + work.workHours * work.workHoursSalary
+        const earing = Number(work.dailyEarnings) + Number(work.workHours) * Number(work.workHoursSalary)
         return (
             <View style={styles.card}>
                 <Text style={styles.workerName}>{item.firstName} {item.lastName}</Text>

@@ -41,16 +41,12 @@ const WorkMonth = () => {
     const renderItem = ({ item }) => {
         const work = item.workerDay.filter(day => day.date.split("-")[1] === formattedDate.split("-")[1] && day.status === "Gəldi");
         const earing = work.reduce((acc, curr) => acc + Number(curr.dailyEarnings) + Number(curr.workHours) * Number(curr.workHoursSalary), 0);
-        // const workHoursSum = work.reduce((acc, curr) => acc + curr.workHours, 0);
         return (
             <View style={styles.card}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <View>
                         <Text style={styles.workerName}>{item.firstName} {item.lastName}</Text>
                         <Text style={styles.workerPosition}>{item.position}</Text>
-                        {/* <Text style={[styles.remainingTimeText, work.workHours && styles.remainingTimeTextColor]}>
-          <Text style={{ color: "black" }}>Toplam Mesai: </Text> {workHoursSum ? workHoursSum : "0"} saat
-        </Text> */}
                         <Text style={styles.earnings}>Ayliq qazanc:  <Text style={styles.earningsColor}>{earing} Azn</Text></Text>
                     </View>
                     <TouchableOpacity

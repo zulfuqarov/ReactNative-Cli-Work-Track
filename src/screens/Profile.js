@@ -20,13 +20,13 @@ const Profile = () => {
 
       {/* Department */}
       <View style={styles.departmentContainer}>
-        <Text style={styles.departmentLabel}>Department</Text>
+        <Text style={styles.departmentLabel}>Şirkət:</Text>
         <Text style={styles.departmentValue}>{user?.department || "N/A"}</Text>
       </View>
 
       {/* Çıkış butonu */}
       <TouchableOpacity style={styles.logoutButton} onPress={logoutUser}>
-        <Text style={styles.logoutText}>Logout</Text>
+        <Text style={styles.logoutText}>Hesabdan Çıxış</Text>
       </TouchableOpacity>
     </View>
   );

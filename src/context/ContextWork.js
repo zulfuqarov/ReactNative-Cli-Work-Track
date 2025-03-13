@@ -1,10 +1,11 @@
-import React, { createContext, useState, useEffect, cloneElement } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import { AppState } from 'react-native';
 
 // auth import firebase
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from 'firebase/auth';
 
 // database import firebase
-import { collection, doc, setDoc, getDoc, addDoc, getDocs, deleteDoc, onSnapshot, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, addDoc, getDocs, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 
 import { MyDb, auth } from '../../connection/firebaseConnection'
 
@@ -18,9 +19,6 @@ export const WorkContext = createContext()
 const ContextWork = ({ children }) => {
 
     const { navigate } = useNavigation()
-
-    const [date, setDate] = useState(new Date().toLocaleDateString('en-GB').replace(/\//g, '-'));
-
 
     //register func
     const registerUser = async (email, password, data) => {
@@ -420,6 +418,20 @@ const ContextWork = ({ children }) => {
         }
     }, [user?.id])
 
+    // date start
+    const [appState, setAppState] = useState(AppState.currentState);
+    const [date, setDate] = useState(new Date().toLocaleDateString('en-GB').replace(/\//g, '-'));
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', async nextAppState => {
+            if (appState.match(/inactive|background/) && nextAppState === 'active') {
+                setDate(new Date().toLocaleDateString('en-GB').replace(/\//g, '-'))
+            } else if (nextAppState === 'background') {
+            }
+            setAppState(nextAppState);
+        });
+
+        return () => subscription.remove();
+    }, [appState]);
 
     return (
         <WorkContext.Provider value={{
